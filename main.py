@@ -15,6 +15,7 @@ def intro():
 
 def start_new():
     game = Hangman()
+    game.new_word()
     return game
 
 
@@ -22,24 +23,47 @@ def load_save():
     pass
 
 
-def check_guess():
-    pass
+def check_guess(guess, game):
+    '''Runs guess through Hangman class'''
+    game.check_guess(guess)
 
 
 def check_winner():
     pass
 
 
-def print_game():
-    pass
+def print_game(game):
+    print(game.print_board())
+    print(game.get_correct())
+    print(game.get_wrong())
+    print(game.get_guessed())
 
 
-def check_input():
-    pass
+def check_input(guess, game):
+    '''Check if input is a single letter'''
+    if guess == "exit":
+        return guess
+
+    if not guess.isalpha() or len(guess) > 1:
+        return False
+
+    elif guess in game.get_guessed():
+        return False
+
+    else:
+        return True
 
 
-def get_guess():
-    pass
+def get_guess(game):
+    '''Asks user for guess, checks input, returns guess'''
+    while True:
+        guess = input("Enter your guess: ")
+        is_good = check_input(guess, game)
+
+        if is_good:
+            return guess
+        else:
+            print("Invalid input!")
 
 
 def check_loser():
@@ -52,20 +76,20 @@ def main():
         guess = ""
         game = start_new()
         while guess.lower() != "exit":
-            print_game()
-            guess = get_guess()
-            check_guess(guess)
-            winner = check_winner(game.get_word_length())
+            print_game(game)
+            guess = get_guess(game)
+            check_guess(guess, game)
+            winner = check_winner()
             loser = check_loser()
-            if winner:
-                declare_winner()
+
+            if winner or loser:
                 break
-            if loser:
-                declare_loser()
-                break
-        continue = input("Would you like to play another game? [y/n]").lower()
-        if continue == "n":
+
+        new_game = input("Would you like to play another game? [y/n]").lower()
+
+        if new_game == "n":
             break
+        elif new_game == "y":
+            continue
 
-
-
+main()
